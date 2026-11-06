@@ -3638,78 +3638,69 @@ h2{font-family:Georgia,"Times New Roman",serif;font-size:clamp(25px,2.4vw,34px);
       }
     });
 
-    // Load an actual interactive model only when an SKU-specific GLB/GLTF file is configured.
+    // Load the model-viewer component FIRST, then attach events, then set src.
+    // This ordering prevents the GLB load event from firing before the listener exists.
     if(modelUrl){
-      const safeModelUrl=String(modelUrl);
+      const safeModelUrl=new URL(String(modelUrl),document.baseURI).href;
       const viewer=document.createElement('model-viewer');
-      viewer.setAttribute('src',safeModelUrl);
       viewer.setAttribute('alt',title+' — visualisasi 3D ilustratif untuk demo');
       viewer.setAttribute('camera-controls','');
-      viewer.setAttribute('interaction-prompt','none');
-      viewer.setAttribute('shadow-intensity','1.15');
+      viewer.setAttribute('interaction-prompt','auto');
+      viewer.setAttribute('shadow-intensity','1.2');
       viewer.setAttribute('shadow-softness','0.9');
       viewer.setAttribute('environment-image','neutral');
-      viewer.setAttribute('exposure','1.12');
+      viewer.setAttribute('exposure','1.15');
       viewer.setAttribute('tone-mapping','commerce');
       viewer.setAttribute('camera-orbit','35deg 72deg 120%');
       viewer.setAttribute('field-of-view','30deg');
+      viewer.setAttribute('min-camera-orbit','auto 5deg auto');
+      viewer.setAttribute('max-camera-orbit','auto 175deg auto');
       viewer.setAttribute('touch-action','none');
+      viewer.setAttribute('disable-pan','');
       viewer.hidden=true;
       modelStage.appendChild(viewer);
-      const cameraPresets=modelStage.querySelectorAll('[data-v14-camera]');
-      cameraPresets.forEach(button=>button.addEventListener('click',()=>{
-        viewer.autoRotate=false;
-        const auto=modelStage.querySelector('[data-v14-auto]');
-        if(auto){auto.setAttribute('aria-pressed','false');auto.textContent='Putar otomatis';}
-        const preset=button.dataset.v14Camera;
-        const orbit={
-          front:'0deg 75deg 120%',
-          side:'90deg 75deg 120%',
-          top:'0deg 12deg 135%'
-        }[preset]||'35deg 72deg 120%';
-        viewer.cameraOrbit=orbit;
-        viewer.fieldOfView='30deg';
-      }));
-      const autoButton=modelStage.querySelector('[data-v14-auto]');
-      autoButton?.addEventListener('click',()=>{
-        viewer.autoRotate=!viewer.autoRotate;
-        autoButton.setAttribute('aria-pressed',String(viewer.autoRotate));
-        autoButton.textContent=viewer.autoRotate?'Hentikan putaran':'Putar otomatis';
-      });
-      status.textContent='Memuat model 3D produk…';
+
       const loadLibrary=()=>{
         if(customElements.get('model-viewer'))return Promise.resolve();
-        if(window.__rumaV13ModelViewerPromise)return window.__rumaV13ModelViewerPromise;
-        window.__rumaV13ModelViewerPromise=new Promise((resolve,reject)=>{
+        if(window.__rumaV16ModelViewerPromise)return window.__rumaV16ModelViewerPromise;
+        window.__rumaV16ModelViewerPromise=new Promise((resolve,reject)=>{
           const script=document.createElement('script');
           script.type='module';
           script.src='https://ajax.googleapis.com/ajax/libs/model-viewer/4.0.0/model-viewer.min.js';
           script.onload=()=>customElements.whenDefined('model-viewer').then(resolve).catch(reject);
-          script.onerror=reject;
+          script.onerror=()=>reject(new Error('CDN model-viewer gagal dimuat'));
           document.head.appendChild(script);
         });
-        return window.__rumaV13ModelViewerPromise;
+        return window.__rumaV16ModelViewerPromise;
       };
+
+      status.textContent='Memuat objek 3D…';
       loadLibrary().then(()=>{
+        // Attach listeners before assigning src so the load/error event cannot be missed.
         viewer.addEventListener('load',()=>{
-          viewer.hidden=false;status.hidden=true;
-          viewer.cameraOrbit='35deg 72deg 120%';
-          viewer.fieldOfView='30deg';
-          modelTab.disabled=false;modelTab.textContent='3D ilustratif';
-          modelTab.title='Model 3D ilustratif untuk demo — bukan model resmi IKEA.';
-          // Keep the original catalogue photo as the default view; the visitor can opt into 3D.
+          viewer.hidden=false;
+          status.hidden=true;
+          modelTab.disabled=false;
+          modelTab.textContent='3D aktif';
+          modelTab.title='Objek 3D interaktif. Seret untuk orbit, cubit/scroll untuk zoom.';
+          // Show the actual 3D object as soon as it is ready on the five demo products.
+          setMode('model');
         },{once:true});
         viewer.addEventListener('error',()=>{
-          status.hidden=false;
-          status.textContent='Model 3D ilustratif tidak dapat dimuat. Periksa file GLB dan alamat asetnya.';
           viewer.hidden=true;
-          modelTab.disabled=true;modelTab.textContent='3D gagal dimuat';
+          status.hidden=false;
+          status.textContent='Model 3D gagal dimuat. Pastikan folder assets/models ikut diunggah bersama index.html dan alamat file GLB benar.';
+          modelTab.disabled=true;
+          modelTab.textContent='3D gagal dimuat';
         },{once:true});
+        viewer.setAttribute('src',safeModelUrl);
       }).catch(()=>{
-        status.textContent='Komponen 3D gagal dimuat. Periksa koneksi internet atau CDN.';
-        modelTab.disabled=true;modelTab.textContent='3D tidak tersedia';
+        status.hidden=false;
+        status.textContent='Komponen 3D tidak dapat dimuat. Periksa koneksi internet atau akses ke CDN model-viewer.';
+        modelTab.disabled=true;
+        modelTab.textContent='3D tidak tersedia';
       });
-    }else if(modelTab){
+        }else if(modelTab){
       modelTab.title='Tambahkan file GLB/GLTF yang cocok dengan produk ini untuk mengaktifkan 3D.';
       modelTab.setAttribute('aria-label','Model 3D belum tersedia untuk produk ini');
     }
