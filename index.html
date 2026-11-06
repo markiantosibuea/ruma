@@ -43,6 +43,72 @@
 .sales-stats.secondary article{background:#fbfcf9}
 @media(max-width:900px){.sales-export-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:480px){.sales-export-panel,.seller-performance-panel{padding:14px}.sales-export-grid{grid-template-columns:1fr 1fr;gap:8px}.sales-export-btn{min-height:100px;padding:10px}.sales-export-heading{flex-direction:column}}
+
+/* --- RUMA v20 realistic 3D viewer upgrades --- */
+.ruma-v13-product-viewer{
+  border-color:#e4dccf!important;
+  background:
+    radial-gradient(130% 95% at 50% 78%, rgba(128,104,72,.16) 0%, rgba(128,104,72,.06) 24%, rgba(255,255,255,0) 48%),
+    radial-gradient(115% 120% at 50% 18%, rgba(255,255,255,.95) 0%, rgba(252,249,242,.92) 34%, rgba(236,232,224,.88) 72%, rgba(228,222,212,.92) 100%)!important;
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.82),
+    0 14px 34px rgba(43,45,38,.06),
+    0 4px 14px rgba(43,45,38,.05)!important;
+}
+.ruma-v13-model-stage{
+  background:
+    radial-gradient(120% 84% at 50% 82%, rgba(87,67,44,.10) 0%, rgba(87,67,44,.05) 28%, rgba(255,255,255,0) 52%),
+    linear-gradient(180deg, rgba(255,255,255,.82) 0%, rgba(249,246,239,.88) 42%, rgba(241,238,231,.96) 100%)!important;
+}
+.ruma-v13-model-stage::before{
+  content:"";
+  position:absolute;
+  left:50%;
+  bottom:20px;
+  width:min(78%, 420px);
+  height:72px;
+  transform:translateX(-50%);
+  background:radial-gradient(ellipse at center, rgba(40,31,20,.18) 0%, rgba(65,52,38,.10) 34%, rgba(90,74,55,.04) 58%, rgba(255,255,255,0) 74%);
+  filter:blur(16px);
+  opacity:.75;
+  pointer-events:none;
+  z-index:0;
+}
+.ruma-v20-floor-shadow{
+  position:absolute;
+  left:50%;
+  bottom:24px;
+  width:min(74%, 400px);
+  height:64px;
+  transform:translateX(-50%);
+  border-radius:50%;
+  background:radial-gradient(ellipse at center, rgba(31,25,18,.26) 0%, rgba(70,56,40,.14) 32%, rgba(115,97,76,.06) 56%, rgba(255,255,255,0) 72%);
+  filter:blur(15px);
+  opacity:.72;
+  pointer-events:none;
+  z-index:0;
+}
+.ruma-native-3d-canvas{
+  position:relative;
+  z-index:1;
+  width:100%;
+  height:100%;
+  min-height:320px;
+  display:block;
+  filter:drop-shadow(0 22px 28px rgba(35,29,20,.13)) drop-shadow(0 6px 10px rgba(35,29,20,.08));
+}
+.ruma-v13-product-photo{
+  filter:drop-shadow(0 20px 24px rgba(35,29,20,.12))!important;
+}
+.ruma-v13-model-status{
+  position:relative;
+  z-index:2;
+  background:rgba(255,255,255,.74);
+  backdrop-filter:blur(10px);
+  border:1px solid rgba(125,108,82,.16);
+  box-shadow:0 6px 18px rgba(35,29,20,.06);
+}
+
 </style>
 
 <style id="salesDashboardStyles">
@@ -1015,7 +1081,7 @@ body.ruma-mobile-nav-active,body.ruma-admin-nav-active{overflow:hidden!important
 #productDetailPage .ruma-v13-model-stage .ruma-v13-model-status[hidden]{display:none!important}
 </style>
 
-<meta name="ruma-build" content="v19-all-products-3d">
+<meta name="ruma-build" content="v20-realistic-look">
 </head>
 <body class="auth-mode">
 <div class="top">Ruang nyaman, hidup lebih mudah. &nbsp; • &nbsp; Inspirasi kebutuhan sehari-hari, semuanya di sini.</div>
@@ -3661,6 +3727,10 @@ h2{font-family:Georgia,"Times New Roman",serif;font-size:clamp(25px,2.4vw,34px);
 
     // Standalone GLB/WebGL viewer: no external 3D library or CDN dependency.
     if(modelUrl){
+      modelStage.classList.add('ruma-v20-realistic-viewer');
+      const floorShadow=document.createElement('div');
+      floorShadow.className='ruma-v20-floor-shadow';
+      modelStage.insertBefore(floorShadow,modelStage.firstChild);
       const canvas=document.createElement('canvas');
       canvas.className='ruma-native-3d-canvas';
       canvas.setAttribute('role','img');
@@ -3692,9 +3762,11 @@ h2{font-family:Georgia,"Times New Roman",serif;font-size:clamp(25px,2.4vw,34px);
         uniform float uFov;
         varying vec3 vNormal;
         varying vec3 vViewPosition;
+        varying vec3 vModelPosition;
         void main(){
           vec3 p=(aPosition-uCenter)*uScale;
           vec3 n=aNormal;
+          vModelPosition=p;
           float cy=cos(uYaw),sy=sin(uYaw);
           p=vec3(cy*p.x+sy*p.z,p.y,-sy*p.x+cy*p.z);
           n=vec3(cy*n.x+sy*n.z,n.y,-sy*n.x+cy*n.z);
@@ -3703,7 +3775,7 @@ h2{font-family:Georgia,"Times New Roman",serif;font-size:clamp(25px,2.4vw,34px);
           n=vec3(n.x,cp*n.y-sp*n.z,sp*n.y+cp*n.z);
           vec3 v=vec3(p.x,p.y,p.z-uDistance);
           vViewPosition=v;
-          vNormal=n;
+          vNormal=normalize(n);
           float f=1.0/tan(uFov*0.5);
           float nearPlane=0.08,farPlane=100.0;
           gl_Position=vec4(
@@ -3719,16 +3791,62 @@ h2{font-family:Georgia,"Times New Roman",serif;font-size:clamp(25px,2.4vw,34px);
         uniform vec4 uColor;
         varying vec3 vNormal;
         varying vec3 vViewPosition;
+        varying vec3 vModelPosition;
+
+        float hash21(vec2 p){
+          p=fract(p*vec2(123.34,456.21));
+          p+=dot(p,p+45.32);
+          return fract(p.x*p.y);
+        }
+        float noise(vec2 p){
+          vec2 i=floor(p), f=fract(p);
+          float a=hash21(i);
+          float b=hash21(i+vec2(1.0,0.0));
+          float c=hash21(i+vec2(0.0,1.0));
+          float d=hash21(i+vec2(1.0,1.0));
+          vec2 u=f*f*(3.0-2.0*f);
+          return mix(a,b,u.x)+(c-a)*u.y*(1.0-u.x)+(d-b)*u.x*u.y;
+        }
+
         void main(){
           vec3 n=normalize(vNormal);
-          vec3 lightDir=normalize(vec3(-0.45,0.82,0.62));
-          float diffuse=max(dot(n,lightDir),0.0);
-          float hemisphere=0.5+0.5*n.y;
           vec3 viewDir=normalize(-vViewPosition);
-          vec3 halfDir=normalize(lightDir+viewDir);
-          float specular=pow(max(dot(n,halfDir),0.0),28.0)*0.13;
-          vec3 color=uColor.rgb*(0.34+0.48*diffuse+0.12*hemisphere)+vec3(specular);
-          gl_FragColor=vec4(min(color,vec3(1.0)),uColor.a);
+          vec3 keyDir=normalize(vec3(-0.42,0.86,0.56));
+          vec3 fillDir=normalize(vec3(0.75,0.26,0.54));
+          vec3 backDir=normalize(vec3(0.0,0.22,-1.0));
+
+          float ndl=max(dot(n,keyDir),0.0);
+          float fill=max(dot(n,fillDir),0.0);
+          float back=max(dot(n,backDir),0.0);
+          float hemi=0.5+0.5*n.y;
+          float fresnel=pow(max(1.0-dot(n,viewDir),0.0),2.2);
+
+          vec3 halfKey=normalize(keyDir+viewDir);
+          vec3 halfFill=normalize(fillDir+viewDir);
+          float specKey=pow(max(dot(n,halfKey),0.0),28.0);
+          float specFill=pow(max(dot(n,halfFill),0.0),50.0);
+
+          vec3 base=uColor.rgb;
+          float lum=dot(base,vec3(0.299,0.587,0.114));
+          float fineNoise=noise(vModelPosition.xz*6.0 + vec2(lum*4.7, lum*2.3));
+          float coarseNoise=noise(vModelPosition.xz*2.4 + vec2(7.2, 3.9));
+          float textile=(fineNoise-0.5)*0.08;
+          float woodGrain=sin(vModelPosition.x*18.0 + coarseNoise*3.0)*0.035;
+          float textureMix=smoothstep(0.35,0.72,lum);
+          float detail=mix(textile, woodGrain, textureMix);
+
+          vec3 lit=base*(0.22 + 0.54*ndl + 0.16*fill + 0.14*hemi + 0.06*back);
+          lit += vec3(specKey*0.14 + specFill*0.05);
+          lit += base*detail;
+          lit += vec3(0.10)*fresnel;
+          lit += vec3(0.03*coarseNoise);
+
+          // gentle filmic toning
+          lit=max(lit,vec3(0.0));
+          lit=lit/(lit+vec3(0.75));
+          lit=pow(lit,vec3(0.93));
+
+          gl_FragColor=vec4(clamp(lit,0.0,1.0),uColor.a);
         }`;
 
       function decodeGLB(buffer){
