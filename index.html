@@ -724,7 +724,7 @@ body.ruma-mobile-nav-active,body.ruma-admin-nav-active{overflow:hidden!important
   }
   #productDetailPage .ruma-v13-product-viewer{touch-action:pan-y}
   #productDetailPage .ruma-v13-photo-stage{touch-action:pan-y}
-  #productDetailPage .ruma-v13-model-stage model-viewer{touch-action:pan-y}
+  #productDetailPage .ruma-v13-model-stage model-viewer{touch-action:none}
   .transaction .steps{
     display:flex;flex-wrap:wrap;align-items:center;gap:6px 9px;
     overflow:visible;white-space:normal;padding:10px 0 14px
@@ -783,7 +783,30 @@ body.ruma-mobile-nav-active,body.ruma-admin-nav-active{overflow:hidden!important
 }
 .ruma-v13-model-stage model-viewer{
   width:100%;height:100%;min-height:320px;background:transparent;
-  --poster-color:transparent;outline:none
+  --poster-color:transparent;outline:none;touch-action:none;cursor:grab;
+  --progress-bar-color:#24463d;--progress-bar-height:3px
+}
+.ruma-v13-model-stage model-viewer:active{cursor:grabbing}
+.ruma-v14-model-controls{
+  position:absolute;right:12px;top:12px;z-index:6;display:flex;flex-wrap:wrap;
+  justify-content:flex-end;gap:5px;max-width:calc(100% - 150px);pointer-events:auto
+}
+.ruma-v14-model-controls button{
+  min-height:32px;padding:7px 10px;border:1px solid rgba(36,70,61,.16);
+  border-radius:999px;background:rgba(255,255,252,.94);color:#24463d;
+  font-size:10px;font-weight:750;box-shadow:0 3px 12px rgba(25,35,28,.08);
+  backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)
+}
+.ruma-v14-model-controls button[aria-pressed=true]{background:#24463d;color:#fff}
+.ruma-v14-model-hint{
+  position:absolute;left:12px;bottom:12px;z-index:4;max-width:calc(100% - 24px);
+  padding:7px 10px;border-radius:999px;background:rgba(255,255,252,.88);
+  color:#5e6a60;font-size:9px;pointer-events:none;backdrop-filter:blur(8px)
+}
+@media(max-width:480px){
+  .ruma-v14-model-controls{right:8px;top:8px;max-width:calc(100% - 110px);gap:4px}
+  .ruma-v14-model-controls button{min-height:30px;padding:6px 8px;font-size:9px}
+  .ruma-v14-model-hint{left:8px;bottom:8px;font-size:8px}
 }
 .ruma-v14-model-badge{
   position:absolute;left:12px;top:12px;z-index:4;
@@ -960,7 +983,16 @@ body.ruma-mobile-nav-active,body.ruma-admin-nav-active{overflow:hidden!important
 #overlay{z-index:1600!important}
 </style>
 
-</head>
+\n<style id="ruma-v15-detailed-3d-overrides">
+/* RUMA v15: full 2-axis model interaction and clearer 3D controls */
+#productDetailPage .ruma-v13-model-stage,
+#productDetailPage .ruma-v13-model-stage model-viewer{
+  touch-action:none!important;
+}
+.ruma-v13-model-stage model-viewer{
+  user-select:none;-webkit-user-select:none;
+}
+</style>\n</head>
 <body class="auth-mode">
 <div class="top">Ruang nyaman, hidup lebih mudah. &nbsp; • &nbsp; Inspirasi kebutuhan sehari-hari, semuanya di sini.</div>
 <header><div class="nav"><a class="logo" href="#" aria-label="RUMA Beranda">RUMA<span>•</span></a><div class="search"><input id="search" type="search" placeholder="Apa yang rumahmu butuhkan?" aria-label="Cari produk"><b aria-hidden="true">⌕</b></div><button class="iconbtn" id="openCart">♧ &nbsp; Keranjang <span class="cartnum" id="count">0</span></button></div><nav class="links"><a href="#kategori">Semua kategori</a><a href="#produk">Produk pilihan</a><a href="#promo">Harga spesial</a><a href="#inspirasi">Inspirasi ruangan</a><a href="#shops" data-ruma-directory>Jelajahi Toko</a><a href="#tracking" data-ruma-tracking>Lacak Pesanan</a><a href="#seller-register" id="sellerRegisterNav">Jadi Penjual</a><a href="#customer-account" id="customerHubNav">Akun Saya</a><a href="#login" id="openLoginNav">Login</a><span class="right">Dirancang untuk hidup sehari-hari ↗</span></nav></header>
@@ -3522,6 +3554,18 @@ h2{font-family:Georgia,"Times New Roman",serif;font-size:clamp(25px,2.4vw,34px);
       modelBadge.className='ruma-v14-model-badge';
       modelBadge.textContent='VISUALISASI 3D ILUSTRATIF';
       modelStage.appendChild(modelBadge);
+      const modelControls=document.createElement('div');
+      modelControls.className='ruma-v14-model-controls';
+      modelControls.innerHTML=`
+        <button type="button" data-v14-camera="front" aria-label="Lihat dari depan">Depan</button>
+        <button type="button" data-v14-camera="side" aria-label="Lihat dari samping">Samping</button>
+        <button type="button" data-v14-camera="top" aria-label="Lihat dari atas">Atas</button>
+        <button type="button" data-v14-auto aria-pressed="false">Putar otomatis</button>`;
+      modelStage.appendChild(modelControls);
+      const hint=document.createElement('div');
+      hint.className='ruma-v14-model-hint';
+      hint.textContent='Geser 2 arah untuk memutar · cubit untuk zoom · gunakan tombol sudut pandang';
+      modelStage.appendChild(hint);
     }
     photo.appendChild(modelStage);
 
@@ -3560,7 +3604,7 @@ h2{font-family:Georgia,"Times New Roman",serif;font-size:clamp(25px,2.4vw,34px);
       modelStage.hidden=!showModel;
       photoTab.classList.toggle('is-active',!showModel);
       if(modelTab)modelTab.classList.toggle('is-active',showModel);
-      zoomIn.hidden=showModel;zoomOut.hidden=showModel;
+      zoomIn.hidden=false;zoomOut.hidden=false;
       reset.textContent=showModel?'Reset 3D':'Reset';
     }
     photoTab.addEventListener('click',()=>setMode('photo'));
@@ -3568,12 +3612,30 @@ h2{font-family:Georgia,"Times New Roman",serif;font-size:clamp(25px,2.4vw,34px);
       const viewer=photo.querySelector('model-viewer');
       if(viewer&&!viewer.hidden)setMode('model');
     });
-    zoomIn.addEventListener('click',()=>{zoom=Math.min(2.2,zoom+.15);applyZoom();});
-    zoomOut.addEventListener('click',()=>{zoom=Math.max(1,zoom-.15);applyZoom();});
+    zoomIn.addEventListener('click',()=>{
+      const viewer=photo.querySelector('model-viewer');
+      if(viewer&&!viewer.hidden&&!modelStage.hidden){
+        const fov=parseFloat(viewer.fieldOfView)||30;
+        viewer.fieldOfView=Math.max(18,fov-3)+'deg';
+      }else{zoom=Math.min(2.2,zoom+.15);applyZoom();}
+    });
+    zoomOut.addEventListener('click',()=>{
+      const viewer=photo.querySelector('model-viewer');
+      if(viewer&&!viewer.hidden&&!modelStage.hidden){
+        const fov=parseFloat(viewer.fieldOfView)||30;
+        viewer.fieldOfView=Math.min(50,fov+3)+'deg';
+      }else{zoom=Math.max(1,zoom-.15);applyZoom();}
+    });
     reset.addEventListener('click',()=>{
       zoom=1;applyZoom();
       const viewer=photo.querySelector('model-viewer');
-      if(viewer){viewer.cameraOrbit='0deg 75deg 105%';viewer.fieldOfView='30deg';}
+      if(viewer){
+        viewer.cameraOrbit='35deg 72deg 120%';
+        viewer.fieldOfView='30deg';
+        viewer.autoRotate=false;
+        const auto=modelStage.querySelector('[data-v14-auto]');
+        if(auto){auto.setAttribute('aria-pressed','false');auto.textContent='Putar otomatis';}
+      }
     });
 
     // Load an actual interactive model only when an SKU-specific GLB/GLTF file is configured.
@@ -3583,15 +3645,37 @@ h2{font-family:Georgia,"Times New Roman",serif;font-size:clamp(25px,2.4vw,34px);
       viewer.setAttribute('src',safeModelUrl);
       viewer.setAttribute('alt',title+' — visualisasi 3D ilustratif untuk demo');
       viewer.setAttribute('camera-controls','');
-      viewer.setAttribute('interaction-prompt','auto');
-      viewer.setAttribute('shadow-intensity','1');
+      viewer.setAttribute('interaction-prompt','none');
+      viewer.setAttribute('shadow-intensity','1.15');
+      viewer.setAttribute('shadow-softness','0.9');
       viewer.setAttribute('environment-image','neutral');
-      viewer.setAttribute('exposure','1');
-      viewer.setAttribute('camera-orbit','0deg 75deg 105%');
+      viewer.setAttribute('exposure','1.12');
+      viewer.setAttribute('tone-mapping','commerce');
+      viewer.setAttribute('camera-orbit','35deg 72deg 120%');
       viewer.setAttribute('field-of-view','30deg');
-      viewer.setAttribute('touch-action','pan-y');
+      viewer.setAttribute('touch-action','none');
       viewer.hidden=true;
       modelStage.appendChild(viewer);
+      const cameraPresets=modelStage.querySelectorAll('[data-v14-camera]');
+      cameraPresets.forEach(button=>button.addEventListener('click',()=>{
+        viewer.autoRotate=false;
+        const auto=modelStage.querySelector('[data-v14-auto]');
+        if(auto){auto.setAttribute('aria-pressed','false');auto.textContent='Putar otomatis';}
+        const preset=button.dataset.v14Camera;
+        const orbit={
+          front:'0deg 75deg 120%',
+          side:'90deg 75deg 120%',
+          top:'0deg 12deg 135%'
+        }[preset]||'35deg 72deg 120%';
+        viewer.cameraOrbit=orbit;
+        viewer.fieldOfView='30deg';
+      }));
+      const autoButton=modelStage.querySelector('[data-v14-auto]');
+      autoButton?.addEventListener('click',()=>{
+        viewer.autoRotate=!viewer.autoRotate;
+        autoButton.setAttribute('aria-pressed',String(viewer.autoRotate));
+        autoButton.textContent=viewer.autoRotate?'Hentikan putaran':'Putar otomatis';
+      });
       status.textContent='Memuat model 3D produk…';
       const loadLibrary=()=>{
         if(customElements.get('model-viewer'))return Promise.resolve();
@@ -3609,6 +3693,8 @@ h2{font-family:Georgia,"Times New Roman",serif;font-size:clamp(25px,2.4vw,34px);
       loadLibrary().then(()=>{
         viewer.addEventListener('load',()=>{
           viewer.hidden=false;status.hidden=true;
+          viewer.cameraOrbit='35deg 72deg 120%';
+          viewer.fieldOfView='30deg';
           modelTab.disabled=false;modelTab.textContent='3D ilustratif';
           modelTab.title='Model 3D ilustratif untuk demo — bukan model resmi IKEA.';
           // Keep the original catalogue photo as the default view; the visitor can opt into 3D.
@@ -3994,11 +4080,11 @@ h2{font-family:Georgia,"Times New Roman",serif;font-size:clamp(25px,2.4vw,34px);
    Do not assign a model unless it matches the exact product variant.
 */
 window.RUMA_3D_MODELS=Object.assign({},window.RUMA_3D_MODELS||{}, {
-  '1':'./assets/models/ruma-ektorp-sofa-3-seater-illustrative.glb',
-  '4':'./assets/models/ruma-poang-armchair-illustrative.glb',
-  '14':'./assets/models/ruma-micke-desk-105x50-illustrative.glb',
-  '21':'./assets/models/ruma-kallax-4x4-shelf-illustrative.glb',
-  '51':'./assets/models/ruma-malm-bed-frame-single-90x200-illustrative.glb'
+  '1':'./assets/models/ruma-ektorp-sofa-3-seater-detailed-illustrative.glb',
+  '4':'./assets/models/ruma-poang-armchair-detailed-illustrative.glb',
+  '14':'./assets/models/ruma-micke-desk-105x50-detailed-illustrative.glb',
+  '21':'./assets/models/ruma-kallax-4x4-shelf-detailed-illustrative.glb',
+  '51':'./assets/models/ruma-malm-bed-frame-single-90x200-detailed-illustrative.glb'
 });
 window.RUMA_3D_MODEL_META=Object.assign({},window.RUMA_3D_MODEL_META||{}, {
   type:'illustrative-demo',
