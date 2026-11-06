@@ -715,6 +715,251 @@ body.ruma-mobile-nav-active,body.ruma-admin-nav-active{overflow:hidden!important
   #rumaMobileCheckoutBar{transition:none!important}
 }
 </style>
+<style id="ruma-v13-premium-mobile-styles">
+/* RUMA V13 — premium mobile, gesture navigation, faithful photo and 3D-ready product viewer */
+@media(max-width:800px){
+  #productDetailPage,#orderPage,#payPage,#finishPage{
+    touch-action:pan-y;
+    overscroll-behavior-x:contain;
+  }
+  #productDetailPage .ruma-v13-product-viewer{touch-action:pan-y}
+  #productDetailPage .ruma-v13-photo-stage{touch-action:pan-y}
+  #productDetailPage .ruma-v13-model-stage model-viewer{touch-action:pan-y}
+  .transaction .steps{
+    display:flex;flex-wrap:wrap;align-items:center;gap:6px 9px;
+    overflow:visible;white-space:normal;padding:10px 0 14px
+  }
+  .transaction .steps>*{font-size:10px}
+  .transaction .steps b{
+    padding:8px 12px;border-radius:999px;background:#e8eee8;color:#254b3e
+  }
+  .transaction .steps span:not(:nth-child(even)){
+    padding:7px 10px;border-radius:999px;background:#f5f4ef;color:#7c8178
+  }
+  .transaction{padding-top:20px!important}
+}
+.ruma-v13-edge-indicator{
+  --ruma-edge-progress:0;
+  position:fixed;left:0;top:50%;z-index:99999;
+  width:42px;height:62px;margin-top:-31px;
+  display:flex;align-items:center;justify-content:center;
+  color:#fff;background:rgba(36,70,61,.94);
+  border-radius:0 18px 18px 0;
+  box-shadow:0 8px 24px rgba(22,42,34,.22);
+  transform:translate3d(-115%,0,0) scale(.94);
+  opacity:0;pointer-events:none;
+  transition:transform .18s ease,opacity .18s ease;
+}
+.ruma-v13-edge-indicator:before{
+  content:"";position:absolute;inset:0 auto 0 0;width:4px;
+  border-radius:0 5px 5px 0;background:#d7b77d;
+  transform:scaleY(var(--ruma-edge-progress));transform-origin:center
+}
+.ruma-v13-edge-indicator span{font-size:35px;font-weight:300;line-height:1}
+.ruma-v13-edge-indicator.is-active{
+  transform:translate3d(0,0,0) scale(1);opacity:1
+}
+@media(min-width:801px){.ruma-v13-edge-indicator{display:none!important}}
+@media(prefers-reduced-motion:reduce){
+  .ruma-v13-edge-indicator{transition:none!important}
+}
+.ruma-v13-product-viewer{
+  position:relative;display:flex;flex-direction:column;justify-content:center;
+  min-height:420px;overflow:hidden;isolation:isolate;
+  padding:16px 16px 76px;border:1px solid #e8e2d8;border-radius:18px;
+  background:radial-gradient(ellipse at 50% 65%,rgba(198,163,107,.12),transparent 52%),linear-gradient(145deg,#faf9f5,#efeee8)
+}
+.ruma-v13-photo-stage,.ruma-v13-model-stage{
+  position:relative;width:100%;height:100%;min-height:320px;
+  display:grid;place-items:center;overflow:hidden
+}
+.ruma-v13-photo-stage[hidden],.ruma-v13-model-stage[hidden]{display:none!important}
+.ruma-v13-product-photo{
+  width:100%!important;height:100%!important;max-height:390px!important;
+  min-height:0!important;object-fit:contain!important;
+  display:block!important;padding:8px!important;
+  transform:none!important;filter:drop-shadow(0 16px 18px rgba(34,43,36,.12))!important;
+  transition:transform .18s ease!important;user-select:none;-webkit-user-drag:none
+}
+.ruma-v13-model-stage model-viewer{
+  width:100%;height:100%;min-height:320px;background:transparent;
+  --poster-color:transparent;outline:none
+}
+.ruma-v14-model-badge{
+  position:absolute;left:12px;top:12px;z-index:4;
+  padding:7px 10px;border:1px solid rgba(36,70,61,.14);
+  border-radius:999px;background:rgba(255,255,252,.94);
+  color:#24463d;font-size:9px;font-weight:800;letter-spacing:.055em;
+  box-shadow:0 4px 14px rgba(37,49,39,.08);pointer-events:none
+}
+.ruma-v13-model-status{
+  max-width:310px;padding:17px 19px;border:1px dashed #d8d4ca;
+  border-radius:14px;background:rgba(255,255,255,.78);
+  color:#6d766d;font-size:12px;line-height:1.7;text-align:center
+}
+.ruma-v13-viewer-toolbar{
+  position:absolute;left:12px;right:12px;bottom:11px;z-index:5;
+  display:flex;align-items:center;justify-content:space-between;gap:8px;
+  padding:7px;border:1px solid rgba(224,219,209,.9);
+  border-radius:14px;background:rgba(255,255,252,.94);
+  box-shadow:0 6px 20px rgba(37,49,39,.07);
+  -webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px)
+}
+.ruma-v13-viewer-tabs,.ruma-v13-viewer-actions{display:flex;align-items:center;gap:5px}
+.ruma-v13-viewer-toolbar button{
+  min-height:36px;padding:8px 11px;border:1px solid transparent;
+  border-radius:10px;background:transparent;color:#536055;
+  font-size:10px;font-weight:750;white-space:nowrap
+}
+.ruma-v13-viewer-toolbar button.is-active{
+  background:#24463d;color:#fff
+}
+.ruma-v13-viewer-toolbar button:disabled{
+  opacity:.42;cursor:not-allowed;background:#f0eee8;border-color:#e7e2d8
+}
+.ruma-v13-viewer-toolbar button[hidden]{display:none!important}
+.ruma-v13-viewer-caption{
+  margin:10px 3px 0;color:#737b73;font-size:10px;line-height:1.65
+}
+.ruma-v13-viewer-caption strong{color:#526357}
+@media(max-width:420px){
+  .ruma-v13-product-viewer{min-height:340px;padding:10px 8px 70px}
+  .ruma-v13-photo-stage,.ruma-v13-model-stage{min-height:260px}
+  .ruma-v13-product-photo{max-height:300px!important}
+  .ruma-v13-viewer-toolbar{left:8px;right:8px;bottom:8px;padding:5px;gap:3px}
+  .ruma-v13-viewer-toolbar button{min-height:34px;padding:7px 8px;font-size:9px}
+  .ruma-v13-viewer-tabs,.ruma-v13-viewer-actions{gap:2px}
+}
+
+/* Premium checkout — clean hierarchy, better form rhythm and a clear order summary */
+.transaction{
+  width:min(1160px,100%);margin:34px auto 54px!important;
+  padding:30px clamp(18px,4vw,46px) 42px!important;
+  color:#28382f
+}
+.transaction>.textlink,.transaction>.detail-back{
+  display:inline-flex;align-items:center;gap:8px;margin:0 0 18px;
+  padding:9px 0;color:#52665a;font-size:12px;font-weight:750
+}
+.transaction>.steps{
+  display:flex;align-items:center;gap:9px;flex-wrap:wrap;
+  margin:0 0 22px;padding:11px 13px;border:1px solid #e8e6dc;
+  border-radius:14px;background:linear-gradient(120deg,#fbfaf6,#f3f3ec);
+  color:#879087;font-size:11px
+}
+.transaction>.steps b{
+  padding:9px 14px;border-radius:999px;background:#24463d;color:white;
+  font-size:11px;letter-spacing:.01em
+}
+.transaction>h2{
+  margin:0 0 9px;color:#24382e;font-size:clamp(25px,3vw,34px);
+  line-height:1.18;letter-spacing:-.035em
+}
+.transaction>.notice{
+  max-width:850px;margin:0 0 24px;padding:13px 16px;
+  border:1px solid #e9e2d2;border-radius:12px;background:#faf7ef;
+  color:#72694f;font-size:11px;line-height:1.65
+}
+.transaction-grid{
+  display:grid!important;grid-template-columns:minmax(0,1.35fr) minmax(300px,.85fr);
+  gap:22px!important;align-items:start
+}
+.transaction .panel{
+  padding:clamp(18px,2.4vw,27px)!important;
+  border:1px solid #e9e6de!important;border-radius:18px!important;
+  background:#fff!important;box-shadow:0 12px 36px rgba(36,54,43,.055)!important
+}
+.transaction .panel h3{
+  margin:0 0 18px;color:#293b31;font-size:16px;letter-spacing:-.015em
+}
+.transaction .panel label{
+  display:block;margin:0 0 14px;color:#526056;font-size:11px;font-weight:700
+}
+.transaction .panel input:not([type=radio]):not([type=checkbox]),
+.transaction .panel textarea,.transaction .panel select{
+  width:100%;min-width:0;margin-top:7px;padding:12px 13px;
+  border:1px solid #e2e4dc;border-radius:10px;background:#fcfcfa;
+  color:#28382f;font:inherit;font-size:13px;outline:none;
+  transition:border-color .18s ease,box-shadow .18s ease
+}
+.transaction .panel input:focus,.transaction .panel textarea:focus,.transaction .panel select:focus{
+  border-color:#799385;box-shadow:0 0 0 3px rgba(88,125,104,.11)
+}
+.transaction .panel textarea{resize:vertical;min-height:90px}
+.transaction .twofields{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.transaction .summary-row{
+  display:grid;grid-template-columns:64px minmax(0,1fr) auto;
+  align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid #efeee9
+}
+.transaction .summary-row img{
+  width:64px;height:68px;object-fit:contain;border-radius:10px;background:#f6f5f0
+}
+.transaction .summary-row strong{color:#33453a;font-size:11px;line-height:1.45}
+.transaction .summary-row small{display:block;margin-top:4px;color:#858b82;font-size:9px;line-height:1.5}
+.transaction .total{
+  display:flex;justify-content:space-between;align-items:center;gap:12px;
+  padding:11px 0;border-bottom:1px solid #f0efe9;color:#69736a;font-size:11px
+}
+.transaction .total:last-of-type{
+  margin-top:5px;padding:15px 0;border-bottom:0;color:#283d31;font-size:14px
+}
+.transaction .total:last-of-type strong{font-size:17px;color:#24463d}
+.transaction .note{color:#858b82;font-size:10px;line-height:1.6}
+.transaction .primary{
+  min-height:48px;padding:13px 20px;border:0;border-radius:999px;
+  background:#24463d;color:#fff;font-size:12px;font-weight:800;
+  box-shadow:0 7px 18px rgba(36,70,61,.14)
+}
+.transaction .primary:hover{background:#193a31;transform:translateY(-1px)}
+.transaction #addressForm>.primary,.transaction #paymentForm>.primary{width:100%;margin-top:12px}
+.transaction .pay-option{
+  display:flex!important;align-items:center;gap:10px;padding:13px 14px!important;
+  border:1px solid #e8e9e2;border-radius:12px;background:#fcfcfa
+}
+.transaction .pay-option:has(input:checked){border-color:#8ca294;background:#f4f7f2}
+.transaction .pay-option input{accent-color:#24463d}
+#finishPage .panel{max-width:720px!important;margin:40px auto!important;padding:40px!important}
+#finishPage .panel h2{font-size:30px}
+#finishPage .demo-seal{
+  display:grid;place-items:center;width:68px;height:68px;margin:0 auto 18px;
+  border-radius:50%;background:#e9f1e8;color:#315b43;font-size:31px
+}
+@media(min-width:801px){
+  #orderPage .transaction-grid>aside,#payPage .transaction-grid>aside{position:sticky;top:26px}
+}
+@media(max-width:800px){
+  .transaction{
+    width:100%;margin:10px auto 24px!important;
+    padding:18px 15px calc(105px + env(safe-area-inset-bottom))!important
+  }
+  .transaction>.steps{gap:5px 7px;margin-bottom:17px;padding:9px}
+  .transaction>.steps b,.transaction>.steps span:not(:nth-child(even)){font-size:9px;padding:7px 9px}
+  .transaction>h2{font-size:25px}
+  .transaction>.notice{margin-bottom:16px;padding:11px 12px}
+  .transaction-grid{grid-template-columns:minmax(0,1fr)!important;gap:14px!important}
+  .transaction .panel{padding:17px!important;border-radius:15px!important}
+  .transaction .twofields{grid-template-columns:minmax(0,1fr);gap:0}
+  .transaction .summary-row{grid-template-columns:54px minmax(0,1fr) auto;gap:9px}
+  .transaction .summary-row img{width:54px;height:58px}
+  #finishPage .panel{margin:25px auto!important;padding:25px 18px!important}
+  #finishPage .panel h2{font-size:24px}
+}
+</style>
+
+<style id="ruma-v13-transition-hit-testing">
+/* Hidden/fading transition art must never sit above the storefront and steal edge gestures. */
+.ruma-transition:not(.active),
+.ruma-transition.fade-out{
+  pointer-events:none!important;
+}
+</style>
+
+
+<style id="ruma-v13-cart-layer-fix">
+/* Cart must sit above the sticky header on both desktop and mobile. */
+#overlay{z-index:1600!important}
+</style>
+
 </head>
 <body class="auth-mode">
 <div class="top">Ruang nyaman, hidup lebih mudah. &nbsp; • &nbsp; Inspirasi kebutuhan sehari-hari, semuanya di sini.</div>
@@ -3242,65 +3487,149 @@ h2{font-family:Georgia,"Times New Roman",serif;font-size:clamp(25px,2.4vw,34px);
   function enhanceProductViewer(){
     const content=$('productDetailContent');
     const photo=content?.querySelector('.detail-photo');
-    if(!photo||photo.dataset.rumaV11Viewer==='1')return;
+    if(!photo||photo.dataset.rumaV13Viewer==='1')return;
     const img=photo.querySelector('img');if(!img)return;
-    photo.dataset.rumaV11Viewer='1';
-    photo.classList.add('ruma-3d-viewer','is-3d');
+    photo.dataset.rumaV13Viewer='1';
+    const title=content.querySelector('.detail-info h1')?.textContent?.trim()||img.alt||'Produk RUMA';
+    const product=typeof items!=='undefined'?items.find(x=>x.name===title):null;
+    const modelUrl=(window.RUMA_3D_MODELS&&product?window.RUMA_3D_MODELS[String(product.id)]:null)||
+      product?.model3dUrl||product?.glbUrl||'';
+
+    photo.classList.remove('detail-photo','ruma-3d-viewer','is-3d');
+    photo.classList.add('ruma-v13-product-viewer');
+    photo.replaceChildren();
     img.draggable=false;
-    img.setAttribute('aria-label','Foto produk dengan preview perspektif interaktif. Geser untuk mengubah sudut tampilan.');
-    if(img.complete&&img.naturalWidth>0)photo.classList.add('ruma-image-loaded');
-    img.addEventListener('load',()=>photo.classList.add('ruma-image-loaded'),{once:true});
+    img.alt=title;
+    img.classList.add('ruma-v13-product-photo');
+    img.removeAttribute('style');
+
+    const photoStage=document.createElement('div');
+    photoStage.className='ruma-v13-photo-stage';
+    photoStage.appendChild(img);
+    photo.appendChild(photoStage);
+
+    const modelStage=document.createElement('div');
+    modelStage.className='ruma-v13-model-stage';
+    modelStage.hidden=true;
+    const status=document.createElement('div');
+    status.className='ruma-v13-model-status';
+    status.textContent=modelUrl
+      ? 'Menyiapkan visualisasi 3D ilustratif untuk demo…'
+      : 'Model 3D ilustratif belum tersedia untuk produk ini. Foto katalog asli tetap ditampilkan tanpa perubahan.';
+    modelStage.appendChild(status);
+    if(modelUrl){
+      const modelBadge=document.createElement('div');
+      modelBadge.className='ruma-v14-model-badge';
+      modelBadge.textContent='VISUALISASI 3D ILUSTRATIF';
+      modelStage.appendChild(modelBadge);
+    }
+    photo.appendChild(modelStage);
+
     const controls=document.createElement('div');
-    controls.className='ruma-3d-controls';
+    controls.className='ruma-v13-viewer-toolbar';
     controls.innerHTML=`
-      <div class="ruma-3d-controls-group">
-        <button type="button" class="primary" data-ruma-3d-mode aria-pressed="true">3D Preview</button>
-        <button type="button" data-ruma-3d-zoom-out aria-label="Perkecil tampilan">−</button>
-        <button type="button" data-ruma-3d-zoom-in aria-label="Perbesar tampilan">＋</button>
+      <div class="ruma-v13-viewer-tabs">
+        <button type="button" class="is-active" data-v13-view="photo">Foto asli</button>
+        <button type="button" data-v13-view="model" disabled>${modelUrl?'Memuat 3D…':'3D belum tersedia'}</button>
       </div>
-      <div class="ruma-3d-controls-group"><button type="button" data-ruma-3d-reset>Reset</button></div>`;
+      <div class="ruma-v13-viewer-actions">
+        <button type="button" data-v13-zoom-out aria-label="Perkecil foto">−</button>
+        <button type="button" data-v13-zoom-in aria-label="Perbesar foto">＋</button>
+        <button type="button" data-v13-reset>Reset</button>
+      </div>`;
     photo.appendChild(controls);
+
     const caption=document.createElement('p');
-    caption.className='ruma-3d-caption';
-    caption.innerHTML='<strong>Geser foto</strong> ke kiri/kanan atau gerakkan kursor untuk melihat efek perspektif. Ini adalah preview 3D-style dari foto katalog 2D, bukan model 3D 360°.';
+    caption.className='ruma-v13-viewer-caption';
+    caption.innerHTML=modelUrl
+      ? '<strong>Visualisasi 3D ilustratif untuk demo.</strong> Model ini dibuat sebagai representasi bentuk produk dan bukan model resmi IKEA atau replika teknis berskala presisi. Foto katalog asli tetap dipertahankan.'
+      : '<strong>Foto katalog dipertahankan.</strong> Visualisasi 3D ilustratif belum tersedia untuk produk ini.';
     photo.insertAdjacentElement('afterend',caption);
-    let down=false,startX=0,startY=0,baseX=0,baseY=0,rx=0,ry=0,zoom=1,enabled=true;
-    const clamp=(v,min,max)=>Math.max(min,Math.min(max,v));
-    const apply=()=>{
-      photo.style.setProperty('--ruma-v11-rx',rx.toFixed(1)+'deg');
-      photo.style.setProperty('--ruma-v11-ry',ry.toFixed(1)+'deg');
-      photo.style.setProperty('--ruma-v11-zoom',zoom.toFixed(2));
-    };
-    const setFromPoint=e=>{
-      const rect=photo.getBoundingClientRect();
-      const nx=(e.clientX-rect.left)/rect.width-.5;
-      const ny=(e.clientY-rect.top)/rect.height-.5;
-      rx=clamp(-ny*17,-9,9);ry=clamp(nx*24,-13,13);apply();
-    };
-    photo.addEventListener('pointerdown',e=>{
-      if(!enabled||e.target.closest('button'))return;
-      down=true;startX=e.clientX;startY=e.clientY;baseX=ry;baseY=rx;
-      photo.classList.add('is-dragging');
-      try{photo.setPointerCapture(e.pointerId)}catch{}
+
+    let zoom=1;
+    const applyZoom=()=>{img.style.transform=`scale(${zoom.toFixed(2)})`;};
+    const photoTab=controls.querySelector('[data-v13-view="photo"]');
+    const modelTab=controls.querySelector('[data-v13-view="model"]');
+    const zoomIn=controls.querySelector('[data-v13-zoom-in]');
+    const zoomOut=controls.querySelector('[data-v13-zoom-out]');
+    const reset=controls.querySelector('[data-v13-reset]');
+
+    function setMode(mode){
+      const showModel=mode==='model'&&!!photo.querySelector('model-viewer')&&!photo.querySelector('model-viewer').hidden;
+      photoStage.hidden=showModel;
+      modelStage.hidden=!showModel;
+      photoTab.classList.toggle('is-active',!showModel);
+      if(modelTab)modelTab.classList.toggle('is-active',showModel);
+      zoomIn.hidden=showModel;zoomOut.hidden=showModel;
+      reset.textContent=showModel?'Reset 3D':'Reset';
+    }
+    photoTab.addEventListener('click',()=>setMode('photo'));
+    modelTab?.addEventListener('click',()=>{
+      const viewer=photo.querySelector('model-viewer');
+      if(viewer&&!viewer.hidden)setMode('model');
     });
-    photo.addEventListener('pointermove',e=>{
-      if(!enabled)return;
-      if(down){
-        const dx=e.clientX-startX,dy=e.clientY-startY;
-        ry=clamp(baseX+dx*.22,-18,18);rx=clamp(baseY-dy*.16,-12,12);apply();
-      }else if(e.pointerType==='mouse')setFromPoint(e);
+    zoomIn.addEventListener('click',()=>{zoom=Math.min(2.2,zoom+.15);applyZoom();});
+    zoomOut.addEventListener('click',()=>{zoom=Math.max(1,zoom-.15);applyZoom();});
+    reset.addEventListener('click',()=>{
+      zoom=1;applyZoom();
+      const viewer=photo.querySelector('model-viewer');
+      if(viewer){viewer.cameraOrbit='0deg 75deg 105%';viewer.fieldOfView='30deg';}
     });
-    const release=()=>{down=false;photo.classList.remove('is-dragging');};
-    photo.addEventListener('pointerup',release);photo.addEventListener('pointercancel',release);
-    photo.addEventListener('pointerleave',()=>{if(!down&&enabled){rx=0;ry=0;apply();}});
-    controls.querySelector('[data-ruma-3d-mode]').addEventListener('click',e=>{
-      enabled=!enabled;photo.classList.toggle('is-disabled',!enabled);e.currentTarget.setAttribute('aria-pressed',String(enabled));e.currentTarget.textContent=enabled?'3D Preview':'Foto biasa';
-      if(!enabled){rx=0;ry=0;zoom=1;apply();}
-    });
-    controls.querySelector('[data-ruma-3d-zoom-in]').addEventListener('click',()=>{zoom=clamp(zoom+.08,1,1.32);apply();});
-    controls.querySelector('[data-ruma-3d-zoom-out]').addEventListener('click',()=>{zoom=clamp(zoom-.08,1,1.32);apply();});
-    controls.querySelector('[data-ruma-3d-reset]').addEventListener('click',()=>{rx=0;ry=0;zoom=1;enabled=true;photo.classList.remove('is-disabled');controls.querySelector('[data-ruma-3d-mode]').textContent='3D Preview';controls.querySelector('[data-ruma-3d-mode]').setAttribute('aria-pressed','true');apply();});
-    apply();
+
+    // Load an actual interactive model only when an SKU-specific GLB/GLTF file is configured.
+    if(modelUrl){
+      const safeModelUrl=String(modelUrl);
+      const viewer=document.createElement('model-viewer');
+      viewer.setAttribute('src',safeModelUrl);
+      viewer.setAttribute('alt',title+' — visualisasi 3D ilustratif untuk demo');
+      viewer.setAttribute('camera-controls','');
+      viewer.setAttribute('interaction-prompt','auto');
+      viewer.setAttribute('shadow-intensity','1');
+      viewer.setAttribute('environment-image','neutral');
+      viewer.setAttribute('exposure','1');
+      viewer.setAttribute('camera-orbit','0deg 75deg 105%');
+      viewer.setAttribute('field-of-view','30deg');
+      viewer.setAttribute('touch-action','pan-y');
+      viewer.hidden=true;
+      modelStage.appendChild(viewer);
+      status.textContent='Memuat model 3D produk…';
+      const loadLibrary=()=>{
+        if(customElements.get('model-viewer'))return Promise.resolve();
+        if(window.__rumaV13ModelViewerPromise)return window.__rumaV13ModelViewerPromise;
+        window.__rumaV13ModelViewerPromise=new Promise((resolve,reject)=>{
+          const script=document.createElement('script');
+          script.type='module';
+          script.src='https://ajax.googleapis.com/ajax/libs/model-viewer/4.0.0/model-viewer.min.js';
+          script.onload=()=>customElements.whenDefined('model-viewer').then(resolve).catch(reject);
+          script.onerror=reject;
+          document.head.appendChild(script);
+        });
+        return window.__rumaV13ModelViewerPromise;
+      };
+      loadLibrary().then(()=>{
+        viewer.addEventListener('load',()=>{
+          viewer.hidden=false;status.hidden=true;
+          modelTab.disabled=false;modelTab.textContent='3D ilustratif';
+          modelTab.title='Model 3D ilustratif untuk demo — bukan model resmi IKEA.';
+          // Keep the original catalogue photo as the default view; the visitor can opt into 3D.
+        },{once:true});
+        viewer.addEventListener('error',()=>{
+          status.hidden=false;
+          status.textContent='Model 3D ilustratif tidak dapat dimuat. Periksa file GLB dan alamat asetnya.';
+          viewer.hidden=true;
+          modelTab.disabled=true;modelTab.textContent='3D gagal dimuat';
+        },{once:true});
+      }).catch(()=>{
+        status.textContent='Komponen 3D gagal dimuat. Periksa koneksi internet atau CDN.';
+        modelTab.disabled=true;modelTab.textContent='3D tidak tersedia';
+      });
+    }else if(modelTab){
+      modelTab.title='Tambahkan file GLB/GLTF yang cocok dengan produk ini untuk mengaktifkan 3D.';
+      modelTab.setAttribute('aria-label','Model 3D belum tersedia untuk produk ini');
+    }
+
+    // Do not tilt or warp the original catalogue image. It remains pixel-faithful.
+    photo.classList.add('ruma-v13-photo-locked');
     enhanceVariantRail();
   }
 
@@ -3512,39 +3841,118 @@ h2{font-family:Georgia,"Times New Roman",serif;font-size:clamp(25px,2.4vw,34px);
   }
 
   function setupEdgeBackGesture(){
-    let start=null,claimed=false;
-    const editable=el=>!!el?.closest('input,textarea,select,[contenteditable="true"],.ruma-3d-viewer,.catalogbar,.ruma-search-panel,[data-ruma-no-edge-back]');
+    if(window.__rumaV13EdgeBackInstalled)return;
+    window.__rumaV13EdgeBackInstalled=true;
+
+    const routeStack=[location.hash||'#produk'];
+    const routeKey=()=>location.hash||'#produk';
+    const blocked=el=>!!el?.closest(
+      'input,textarea,select,[contenteditable="true"],' +
+      '.catalogbar,.ruma-search-panel,' +
+      '.ruma-search-categories,.ruma-variant-list,[data-ruma-no-edge-back],' +
+      '[data-horizontal-scroll],.rw-table-wrap'
+    );
+    const canHandle=()=>{
+      const overlay=$('overlay')?.classList.contains('open');
+      const sidebar=$('rumaWorkspace')?.querySelector('.rw-sidebar')?.classList.contains('ruma-admin-open');
+      const search=$('rumaMobileSearchPanel')?.classList.contains('is-open');
+      const route=routeKey().slice(1);
+      return !!(overlay||sidebar||search||/^detail-\d+$/.test(route)||['pembelian','pembayaran','selesai'].includes(route));
+    };
+
+    let start=null,claimed=false,indicator=null;
+    function ensureIndicator(){
+      if(indicator)return indicator;
+      indicator=document.createElement('div');
+      indicator.className='ruma-v13-edge-indicator';
+      indicator.setAttribute('aria-hidden','true');
+      indicator.innerHTML='<span>‹</span>';
+      document.body.appendChild(indicator);
+      return indicator;
+    }
+    function showProgress(dx){
+      const el=ensureIndicator();
+      el.style.setProperty('--ruma-edge-progress',String(Math.min(1,Math.max(0,dx/86))));
+      el.classList.add('is-active');
+    }
+    function hideProgress(){
+      if(indicator){indicator.classList.remove('is-active');indicator.style.setProperty('--ruma-edge-progress','0');}
+    }
+    function recordRoute(){
+      const next=routeKey();
+      const current=routeStack[routeStack.length-1];
+      if(next===current)return;
+      const previousIndex=routeStack.lastIndexOf(next);
+      if(previousIndex>=0)routeStack.splice(previousIndex+1);
+      else routeStack.push(next);
+      if(routeStack.length>24)routeStack.splice(1,routeStack.length-24);
+    }
+    window.addEventListener('hashchange',recordRoute);
+
+    function performBack(){
+      const overlay=$('overlay');
+      if(overlay?.classList.contains('open')){$('closeCart')?.click();return 'cart';}
+      const sidebar=$('rumaWorkspace')?.querySelector('.rw-sidebar');
+      if(sidebar?.classList.contains('ruma-admin-open')){$('rumaAdminBackdrop')?.click();return 'admin';}
+      if($('rumaMobileSearchPanel')?.classList.contains('is-open')){window.rumaV12CloseSearch?.();return 'search';}
+
+      let previous=null;
+      if(routeStack.length>1){
+        routeStack.pop();
+        previous=routeStack[routeStack.length-1];
+      }
+      if(!previous){
+        const route=routeKey().slice(1);
+        if(/^detail-\d+$/.test(route)||route==='pembelian'||route==='selesai')previous='#produk';
+        else if(route==='pembayaran')previous='#pembelian';
+        else return 'none';
+      }
+      if(!previous||previous==='#')previous='#produk';
+      if(previous===routeKey()){
+        const route=routeKey().slice(1);
+        previous=route==='pembayaran'?'#pembelian':'#produk';
+      }
+      location.hash=previous;
+      return 'route';
+    }
+
     document.addEventListener('touchstart',e=>{
-      if(!mobile()||!e.touches?.length)return;
+      if(!mobile()||!canHandle()||!e.touches?.length)return;
       const t=e.touches[0];
-      if(t.clientX>24||editable(e.target))return;
-      start={x:t.clientX,y:t.clientY,target:e.target};claimed=false;
-    },{passive:true});
+      const onViewer=!!e.target?.closest('.ruma-v13-product-viewer');
+      if(t.clientX>22||blocked(e.target)||(onViewer&&t.clientX>10))return;
+      start={x:t.clientX,y:t.clientY,id:t.identifier};
+      claimed=false;
+    },{capture:true,passive:true});
+
     document.addEventListener('touchmove',e=>{
       if(!start||!e.touches?.length)return;
-      const t=e.touches[0],dx=t.clientX-start.x,dy=t.clientY-start.y;
-      if(dx>18&&Math.abs(dx)>Math.abs(dy)*1.25){
+      const t=Array.from(e.touches).find(x=>x.identifier===start.id)||e.touches[0];
+      const dx=t.clientX-start.x,dy=t.clientY-start.y;
+      if(dx>10&&dx>Math.abs(dy)*1.18){
         claimed=true;
+        showProgress(dx);
         if(e.cancelable)e.preventDefault();
+      }else if(Math.abs(dy)>18&&Math.abs(dy)>Math.abs(dx)*1.15){
+        start=null;claimed=false;hideProgress();
       }
-    },{passive:false});
+    },{capture:true,passive:false});
+
     document.addEventListener('touchend',e=>{
-      if(!start||!e.changedTouches?.length){start=null;return;}
-      const t=e.changedTouches[0],dx=t.clientX-start.x,dy=t.clientY-start.y;
-      if(claimed&&dx>82&&Math.abs(dy)<85){
-        const overlay=$('overlay'),adminSidebar=$('rumaWorkspace')?.querySelector('.rw-sidebar');
-        const adminOpen=adminSidebar?.classList.contains('ruma-admin-open');
-        const hash=location.hash.slice(1);
-        if(overlay?.classList.contains('open'))$('closeCart')?.click();
-        else if(adminOpen)$('rumaAdminBackdrop')?.click();
-        else if($('rumaMobileSearchPanel')?.classList.contains('is-open'))window.rumaV12CloseSearch?.();
-        else if(/^detail-\d+$/.test(hash))location.hash='produk';
-        else if(hash==='pembayaran')location.hash='pembelian';
-        else if(hash==='pembelian')location.hash='produk';
-        else if(hash==='selesai')location.hash='produk';
-      }
-      start=null;claimed=false;
-    },{passive:true});
+      if(!start||!e.changedTouches?.length){start=null;claimed=false;hideProgress();return;}
+      const t=Array.from(e.changedTouches).find(x=>x.identifier===start.id)||e.changedTouches[0];
+      const dx=t.clientX-start.x,dy=t.clientY-start.y;
+      const shouldGoBack=claimed&&dx>=78&&Math.abs(dy)<96;
+      start=null;claimed=false;hideProgress();
+      if(shouldGoBack)performBack();
+    },{capture:true,passive:true});
+
+    document.addEventListener('touchcancel',()=>{
+      start=null;claimed=false;hideProgress();
+    },{capture:true,passive:true});
+
+    window.rumaV13GoBack=performBack;
+    window.rumaV13EdgeBack={installed:true,routeStack};
   }
 
   function setupCartOpenFocus(){
@@ -3578,5 +3986,48 @@ h2{font-family:Georgia,"Times New Roman",serif;font-size:clamp(25px,2.4vw,34px);
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init,{once:true});else init();
 })();
 </script>
+
+<script id="ruma-v13-mobile-3d-experience">
+/* RUMA_V13_PREMIUM_MOBILE_3D
+   Add verified, SKU-matching GLB/GLTF files below, e.g.
+   window.RUMA_3D_MODELS = {"123":"assets/models/ikea-product-123.glb"};
+   Do not assign a model unless it matches the exact product variant.
+*/
+window.RUMA_3D_MODELS=Object.assign({},window.RUMA_3D_MODELS||{}, {
+  '1':'./assets/models/ruma-ektorp-sofa-3-seater-illustrative.glb',
+  '4':'./assets/models/ruma-poang-armchair-illustrative.glb',
+  '14':'./assets/models/ruma-micke-desk-105x50-illustrative.glb',
+  '21':'./assets/models/ruma-kallax-4x4-shelf-illustrative.glb',
+  '51':'./assets/models/ruma-malm-bed-frame-single-90x200-illustrative.glb'
+});
+window.RUMA_3D_MODEL_META=Object.assign({},window.RUMA_3D_MODEL_META||{}, {
+  type:'illustrative-demo',
+  notice:'Model 3D ini adalah visualisasi ilustratif untuk demo RUMA, bukan aset resmi IKEA atau model teknis presisi.',
+  productIds:[1,4,14,21,51]
+});
+(function(){
+  'use strict';
+  const mobile=()=>window.matchMedia('(max-width:800px)').matches;
+  const $=id=>document.getElementById(id);
+  function updateGestureSurface(){
+    const route=(location.hash||'').slice(1);
+    const active=/^detail-\d+$/.test(route)||['pembelian','pembayaran','selesai'].includes(route);
+    document.body.classList.toggle('ruma-v13-edge-back-active',active);
+  }
+  window.addEventListener('hashchange',updateGestureSurface);
+  updateGestureSurface();
+  window.rumaV13MobileExperience={
+    initialized:true,
+    routeAwareEdgeBack:true,
+    photoFaithfulProductViewer:true,
+    interactive3DModelSupport:true,
+    illustrative3DModelsConfigured:Object.keys(window.RUMA_3D_MODELS).length,
+    modelType:'illustrative-demo',
+    premiumCheckout:true,
+    mode:'demo-local'
+  };
+})();
+</script>
+
 </body>
 </html>
